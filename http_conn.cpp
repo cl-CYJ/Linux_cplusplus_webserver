@@ -15,7 +15,7 @@ int http_conn::m_epollfd = -1;
 int http_conn::m_user_count = 0;
 
 //网站根目录
-const char* doc_root = "/root/c++webserver";
+const char* doc_root = "/root/Linux_cplusplus_webserver";
 
 //设置文件描述符非阻塞
 void setnonblocking(int fd) {
@@ -547,7 +547,7 @@ void http_conn::process() {
         modfd( m_epollfd, m_sockfd, EPOLLIN );
         return;
     }
-    
+    // printf("===============read ret : %d=============\n", read_ret);
     // 生成响应
     bool write_ret = process_write( read_ret );
     if ( !write_ret ) {
