@@ -10,10 +10,10 @@
 #include <signal.h>
 #include <iostream>
 #include <assert.h>
-#include "locker.h"
-#include "threadpool.h"
-#include "http_conn.h"
-#include "time_heap.h"
+#include "/home/cyj/linux/Linux_cplusplus_webserver/lock/locker.h"
+#include "/home/cyj/linux/Linux_cplusplus_webserver/threadpool/threadpool.h"
+#include "/home/cyj/linux/Linux_cplusplus_webserver/http/http_conn.h"
+#include "/home/cyj/linux/Linux_cplusplus_webserver/timer/time_heap.h"
 
 #define MAX_FD 66535 // 最大的文件描述符个数
 #define MAX_EVENT_NUMBER 11000 // epoll监听的文件描述符的最大数量
