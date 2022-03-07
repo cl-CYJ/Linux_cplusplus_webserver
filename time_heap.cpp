@@ -1,4 +1,5 @@
 #include <utility>
+#include <iostream>
 #include "time_heap.h"
  
 time_heap::time_heap(int cap)
@@ -77,6 +78,11 @@ int time_heap::add_timer(heap_timer *timer) {
  
    array[element] = timer;
    array[element]->position = element;
+   #ifdef DEBUG
+   
+       std::cout << "加入时cb_func为: " << array[element]->cb_func << std::endl;
+   
+   #endif 
  
    return 0;
 }
@@ -127,13 +133,30 @@ void time_heap::tick() {
     while (!empty()) {
         if (!tmp) break;
 
+        #ifdef DEBUG
+        
+            printf("tmp->expire - cur = %ld\n", (tmp->expire) - cur);
+        
+        #endif 
         //如果堆顶定时期没到期，则退出循环
-        if (tmp->expire > cur)
+        if (tmp->expire > cur) {
             break;
- 
-        //否则就执行堆顶定时器中的回调函数
-        printf("执行了回调函数");
+        }
+
+        #ifdef DEBUG
+        
+            printf("array[0]->position: %d\n", array[0]->position);
+            printf("array[0]->cb_func: %d\n", array[0]->cb_func);            
+        
+        #endif 
+
+        //否则就执行堆顶定时器中的回调函数     
         if (array[0]->cb_func) {
+            #ifdef DEBUG
+        
+                printf("执行了回调函数: ");
+        
+            #endif 
             array[0]->cb_func(array[0]->user_data);
         }
  
@@ -142,6 +165,7 @@ void time_heap::tick() {
         
         tmp = array[0];
     }
+    printf("堆中还有%d个元素\n", cur_size);
 }
 
 //将一个点下潜

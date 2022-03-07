@@ -15,7 +15,7 @@ int http_conn::m_epollfd = -1;
 int http_conn::m_user_count = 0;
 
 //网站根目录
-const char* doc_root = "/root/Linux_cplusplus_webserver";
+const char* doc_root = "/home/cyj/linux/Linux_cplusplus_webserver";
 
 //设置文件描述符非阻塞
 void setnonblocking(int fd) {
@@ -129,13 +129,12 @@ bool http_conn::read() {
         }
         m_read_idx += bytes;
     }
-    printf("读取到了数据: %s\n", m_read_buf);
+    // printf("读取到了数据: %s\n", m_read_buf);
     return true;
 }
 
 //一次性写完数据
-bool http_conn::write()
-{
+bool http_conn::write() {
     int temp = 0;
     
     //若要发送的数据长度为0, 表示响应报文为空，这一次响应结束
@@ -207,7 +206,7 @@ http_conn::HTTP_CODE http_conn::process_read() {
         text = get_line();
 
         m_start_line = m_checked_idx;
-        printf("got 1 http line: %s\n", text);
+        // printf("got 1 http line: %s\n", text);
 
         switch(m_check_state) {
             case CHECK_STATE_REQUESTLINE:
@@ -236,7 +235,7 @@ http_conn::HTTP_CODE http_conn::process_read() {
                 if (ret == GET_REQUEST) {
                     return do_request();
                 }
-                //请求体解析完成，
+                //请求体解析完成, 防止再次进入循环
                 line_status = LINE_OPEN;
                 break;
             }
@@ -252,7 +251,6 @@ http_conn::HTTP_CODE http_conn::process_read() {
 
 //解析请求行，获得请求方法，目标url， HTTP版本
 http_conn::HTTP_CODE http_conn::parse_request_line(char* text) {
-    printf("parse line %s\n", text);
     // GET /index.html HTTP/1.1
     m_url = strpbrk(text, " \t"); // 判断第二个参数中的字符哪个在text中最先出现
     if (! m_url) { 
@@ -335,7 +333,7 @@ http_conn::HTTP_CODE http_conn::parse_request_header(char* text) {
         text += strspn( text, " \t" );
         m_host = text;
     } else {
-        printf( "unknow header: %s\n", text );
+        // printf( "unknow header: %s\n", text );
     }
     return NO_REQUEST;
 }

@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/epoll.h>
 #include <signal.h>
+#include <iostream>
 #include <assert.h>
 #include "locker.h"
 #include "threadpool.h"
@@ -15,7 +16,7 @@
 #include "time_heap.h"
 
 #define MAX_FD 66535 // 最大的文件描述符个数
-#define MAX_EVENT_NUMBER 10000 // epoll监听的文件描述符的最大数量
+#define MAX_EVENT_NUMBER 11000 // epoll监听的文件描述符的最大数量
 #define TIMESLOT 5 //最小超时单位
  
 //设置定时器相关参数
@@ -34,6 +35,9 @@ extern void setnonblocking(int fd);
 
 //信号处理函数
 void sig_handler(int sig) {
+
+    printf("收到了一次信号并写入管道\n");
+    
     //为保证函数的可重入性，保留原来的errno
     int save_errno = errno;
     int msg = sig;
@@ -58,6 +62,12 @@ void timer_handler() {
 
 //定时器回调函数，删除非活动连接在socket上的注册事件，并关闭
 void cb_func(client_data *user_data) {
+    #ifdef DEBUG
+    
+        printf("%d : 执行了回调函数\n", user_data->sockfd);
+    
+    #endif 
+
     removefd(epollfd, user_data->sockfd);
     http_conn::m_user_count--;
     printf("close fd %d\n", user_data->sockfd);
@@ -162,6 +172,12 @@ int main(int argc, char* argv[]) {
                     continue;
                 }
 
+                #ifdef DEBUG
+                
+                    printf("来了新用户, 他的sockfd为%d\n", connfd);
+                
+                #endif 
+
                 //将新的客户的数据初始化，放到数组中
                 users[connfd].init(connfd, cliaddr);
 
@@ -173,9 +189,12 @@ int main(int argc, char* argv[]) {
                 if (timer) {
                     timer->cb_func = cb_func;
                     timer->user_data = &users_data[connfd];
-
                     ret = client_time_heap.add_timer(timer);
-
+                    #ifdef DEBUG
+                    
+                        printf("ret: %d\n", ret);
+                    
+                    #endif 
                     if (ret == -1) {
                         fprintf(stderr, "client: %d add heap_timer failed.\n", connfd);
                     } else {
@@ -226,7 +245,18 @@ int main(int argc, char* argv[]) {
                         time_t cur = time(NULL);
                         timer->expire = cur + 3 * TIMESLOT;
                         client_time_heap.adjust_node(timer);
+                        #ifdef DEBUG
+                        
+                            std::cout << "读数据后cd_fucn : " << timer->cb_func << std::endl;
+                        
+                        #endif 
                     }
+                    #ifdef DEBUG
+                    
+                        printf("读到新数据, 执行了定时器的更新\n");
+                    
+                    #endif 
+
                 } else {
                     if (timer) {
                         client_time_heap.del_timer(timer);
@@ -248,6 +278,11 @@ int main(int argc, char* argv[]) {
                     time_t cur = time(NULL);
                     timer->expire = cur + 3 * TIMESLOT;
                     client_time_heap.adjust_node(timer);
+                    #ifdef DEBUG
+                    
+                        printf("有数据写到客户端, 执行了定时器的更新\n");  
+
+                    #endif 
                 }
             }
         }
