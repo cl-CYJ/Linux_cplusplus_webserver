@@ -60,13 +60,12 @@ make server
 
 ## 压力测试
 
-![image-20220307151142253](https://imgtu.com/i/b61tRU)
+[![b61tRU.png](https://s1.ax1x.com/2022/03/07/b61tRU.png)](https://imgtu.com/i/b61tRU)
+[![b61yi6.png](https://s1.ax1x.com/2022/03/07/b61yi6.png)](https://imgtu.com/i/b61yi6)
 
-![image-20220307151344741](https://imgtu.com/i/b61yi6)
+[![b61gzD.png](https://s1.ax1x.com/2022/03/07/b61gzD.png)](https://imgtu.com/i/b61gzD)
 
-![image-20220307151538318](https://imgtu.com/i/b61gzD)
-
-![image-20220307151806930](https://imgtu.com/i/b63KfK)
+[![b63KfK.png](https://s1.ax1x.com/2022/03/07/b63KfK.png)](https://imgtu.com/i/b63KfK)
 
 ```
 ./webbench-1.5/webbench -c 客户端数量 -t 访问时间 http://ip:port/  （注意网址格式需要严格按照示例要求）
