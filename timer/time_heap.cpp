@@ -92,13 +92,23 @@ void time_heap::adjust_node(heap_timer* node) {
     percolate_down(node->position);
 }
  
-void time_heap::del_timer(heap_timer *timer)
-{
+void time_heap::del_timer(heap_timer *timer) {
     if (!timer) return;
 
     //仅将定时器的回调函数置为空，即所谓的延迟销毁。
     //这将节省真正删除该定时器的开销，但这样做容易使堆数组膨胀
-    timer->cb_func = NULL;
+    int element = timer->position;
+    int parent = 0;
+    timer->expire = -20;
+    for ( ; element > 0; element = parent) {
+       parent = (element -1) / 2;
+       array[element] = array[parent];
+       array[element]->position = element;
+    }
+    array[element] = timer;
+    array[element]->position = element;
+    if (array[0] == timer) pop_timer();
+    else throw std::exception();
 }
  
 heap_timer* time_heap::top() const {
@@ -110,18 +120,21 @@ heap_timer* time_heap::top() const {
  
 //删除堆顶元素，同时生成新的堆顶定时器
 void time_heap::pop_timer() {
-    if (empty())
+    if (empty()) {
         return;
+    }
  
     if (array[0]) {
         delete array[0];
  
-        //将原来的堆顶元素替换为堆数组中最后一个元素
-        array[0] = array[--cur_size];
-        array[0]->position = 0;
+        //如果还有元素，将原来的堆顶元素替换为堆数组中最后一个元素
+        if (--cur_size > 0) {
+            array[0] = array[cur_size];
+            array[0]->position = 0;
  
-        //对新的堆顶元素执行下潜操作
-        percolate_down(0);
+            //对新的堆顶元素执行下潜操作
+            percolate_down(0);
+        } 
     }
 }
  
