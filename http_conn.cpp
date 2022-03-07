@@ -339,7 +339,7 @@ http_conn::HTTP_CODE http_conn::parse_request_header(char* text) {
 }
 
 
-//解析请求体，我们没有真正解析HTTP请求的消息体，只是判断它是否被完整的读入了
+//解析请求体，我们没有真正解析HTTP请求的消息体，只是判断它是否被完整的读入了，实际上GET请求并没有请求体
 http_conn::HTTP_CODE http_conn::parse_request_content( char* text ) {
      //判断缓冲区中是否读取了消息体
     if ( m_read_idx >= ( m_content_length + m_checked_idx ) )
