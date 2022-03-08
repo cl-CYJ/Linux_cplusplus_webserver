@@ -22,7 +22,7 @@
 //设置定时器相关参数
 static int pipefd[2];
 static int epollfd = 0;
-static time_heap client_time_heap(2048);
+static time_heap client_time_heap(1024);
 
 //添加文件描述符到epoll中
 extern void addfd(int epollfd, int fd, bool one_shot);
@@ -75,14 +75,14 @@ void cb_func(client_data *user_data) {
 
 int main(int argc, char* argv[]) {
 
-    if (argc <= 1) {
-        printf("请按如下格式运行: %s port_number\n", basename(argv[0]));
-        exit(-1);
-    }
+    // if (argc <= 1) {
+    //     printf("请按如下格式运行: %s port_number\n", basename(argv[0]));
+    //     exit(-1);
+    // }
 
     //获取端口号
-    int port = atoi(argv[1]);
-    
+    // int port = atoi(argv[1]);
+    int port = 9999;
     //对SIGPIPE信号进行处理
     addsig(SIGPIPE, SIG_IGN);
 
@@ -271,10 +271,11 @@ int main(int argc, char* argv[]) {
                         client_time_heap.del_timer(timer);
                     }
                     users[sockfd].close_conn();
-                }
-                //若有数据传输，则将定时器往后延迟3个单位
-                //并对新的定时器在堆上的位置进行调整
-                if (timer) {
+                } else if (timer) {
+                    //此处注意如果上面操作了del_timer，delete timer后timer会变为一个莫名其妙的值，
+                    //而不是0，所以此处要用else if()判断，平时使用指针时也需要多加注意这个问题
+                    //若有数据传输，则将定时器往后延迟3个单位
+                    //并对新的定时器在堆上的位置进行调整
                     time_t cur = time(NULL);
                     timer->expire = cur + 3 * TIMESLOT;
                     client_time_heap.adjust_node(timer);

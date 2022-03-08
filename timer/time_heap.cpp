@@ -63,12 +63,13 @@ int time_heap::add_timer(heap_timer *timer) {
        resize();
  
    //新插入一个元素，当前堆大小加1, element是新建空穴的位置
+   timer->position = cur_size;
    int element = cur_size++;
    int parent = 0;
  
    //对从空穴到根节点的路径上的所有节点执行上虑操作
    for ( ; element > 0; element = parent) {
-       parent = (element -1) /2;
+       parent = (element -1) / 2;
 
        if (array[parent]->expire <= timer->expire) break;
  
@@ -185,8 +186,8 @@ void time_heap::percolate_down(int element) {
     int lchild = (element * 2) + 1;
     int rchild = (element * 2) + 2;
 
-    if (lchild <= (cur_size - 1) && array[lchild]->expire < array[element]->expire) tmp = element * 2 + 1;
-    if (rchild <= (cur_size - 1) && array[rchild]->expire < array[element]->expire) tmp = element * 2 + 2;
+    if (lchild <= (cur_size - 1) && array[lchild] && array[lchild]->expire < array[element]->expire) tmp = element * 2 + 1;
+    if (rchild <= (cur_size - 1) && array[rchild] && array[rchild]->expire < array[element]->expire) tmp = element * 2 + 2;
     if (tmp != element)
     {
         heap_swap(element, tmp);
