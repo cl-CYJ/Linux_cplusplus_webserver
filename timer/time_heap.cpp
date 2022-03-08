@@ -98,7 +98,6 @@ void time_heap::del_timer(heap_timer *timer) {
     //将定时器移至堆顶销毁，防止数组在高并发持续访问下膨胀崩溃
     int element = timer->position;
     int parent = 0;
-    timer->expire = -20;
     for ( ; element > 0; element = parent) {
        parent = (element -1) / 2;
        array[element] = array[parent];
