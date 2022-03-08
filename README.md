@@ -53,6 +53,7 @@
 
 ```shell
 修改http_conn.cpp中的网站根目录 "doc_root"
+修改各头文件引入的path，我在本机上配置c_cpp_properties文件后编译也一直找不到头文件，我索性全部改成绝对路径了，你改为自己机器的绝对路径就好
 执行: 
 make server
 ./server 端口号
