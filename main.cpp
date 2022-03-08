@@ -75,14 +75,13 @@ void cb_func(client_data *user_data) {
 
 int main(int argc, char* argv[]) {
 
-    // if (argc <= 1) {
-    //     printf("请按如下格式运行: %s port_number\n", basename(argv[0]));
-    //     exit(-1);
-    // }
+    if (argc <= 1) {
+        printf("请按如下格式运行: %s port_number\n", basename(argv[0]));
+        exit(-1);
+    }
 
-    //获取端口号
-    // int port = atoi(argv[1]);
-    int port = 9999;
+    // 获取端口号
+    int port = atoi(argv[1]);
     //对SIGPIPE信号进行处理
     addsig(SIGPIPE, SIG_IGN);
 
