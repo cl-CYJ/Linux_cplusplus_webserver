@@ -95,8 +95,7 @@ void time_heap::adjust_node(heap_timer* node) {
 void time_heap::del_timer(heap_timer *timer) {
     if (!timer) return;
 
-    //仅将定时器的回调函数置为空，即所谓的延迟销毁。
-    //这将节省真正删除该定时器的开销，但这样做容易使堆数组膨胀
+    //将定时器移至堆顶销毁，防止数组在高并发持续访问下膨胀崩溃
     int element = timer->position;
     int parent = 0;
     timer->expire = -20;
